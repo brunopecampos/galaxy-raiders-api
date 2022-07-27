@@ -10,6 +10,7 @@ data class Point2D(val x: Double, val y: Double) {
 
   operator fun plus(v: Vector2D): Point2D {
     val newPoint: Point2D = Point2D(this.x + v.dx, this.y + v.dy)
+    
     return newPoint
   }
 
