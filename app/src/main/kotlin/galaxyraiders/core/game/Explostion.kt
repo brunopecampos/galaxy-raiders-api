@@ -5,6 +5,7 @@ import galaxyraiders.core.physics.Vector2D
 
 
 class Explosion(
+  isTriggered: Boolean,
   initialPosition: Point2D,
   initialVelocity: Vector2D,
   radius: Double,

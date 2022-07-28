@@ -35,8 +35,11 @@ data class SpaceField(val width: Int, val height: Int, val generator: RandomGene
   var missiles: List<Missile> = emptyList()
     private set
 
+  var explosions: List<Explosion> = emptyList()
+    private set
+
   val spaceObjects: List<SpaceObject>
-    get() = listOf(ship) + asteroids + missiles
+    get() = listOf(ship) + asteroids + missiles + explosions
 
   fun generateAsteroid() {
     asteroids += createAsteroidWithRandomProperties()
@@ -44,6 +47,24 @@ data class SpaceField(val width: Int, val height: Int, val generator: RandomGene
 
   fun generateMissile() {
     missiles += createMissile()
+  }
+
+  fun generateExplosion(position: Point2D) {
+    explosions += createExplosion(position)
+  }
+
+  private fun createExplosion(position: Point2D): Explosion {
+    return Explosion(
+      isTriggered = false,
+      initialPosition = position,
+      initialVelocity = standartExplosionVelocity(),
+      radius = 2.0,
+      mass = 0.0
+    )
+  }
+
+  private fun standartExplosionVelocity(): Vector2D {
+    return Vector2D(dx = 0.0, dy = 0.0)
   }
 
   private fun initializeShip(): SpaceShip {
@@ -56,7 +77,7 @@ data class SpaceField(val width: Int, val height: Int, val generator: RandomGene
   }
 
   private fun standardShipPosition(): Point2D {
-    return Point2D(x = this.width / 2.0, y = 1.0)
+    return Point2D(x = 1.0, y = 1.0)
   }
 
   private fun standardShipVelocity(): Vector2D {
@@ -73,11 +94,13 @@ data class SpaceField(val width: Int, val height: Int, val generator: RandomGene
   }
 
   private fun defineMissilePosition(missileRadius: Double): Point2D {
-    return ship.center + Vector2D(dx = 0.0, dy = ship.radius + missileRadius + SpaceFieldConfig.missileDistanceFromShip)
+    return ship.center + Vector2D(
+      dx = ship.radius + missileRadius + SpaceFieldConfig.missileDistanceFromShip,
+      dy = 0.0)
   }
 
   private fun defineMissileVelocity(): Vector2D {
-    return Vector2D(dx = 0.0, dy = 1.0)
+    return Vector2D(dx = 1.0, dy = 0.0)
   }
 
   private fun createAsteroidWithRandomProperties(): Asteroid {
