@@ -81,23 +81,37 @@ class GameEngine(
 
   fun updateSpaceObjects() {
     if (!this.playing) return
-    this.cleanExplosions()
+    this.clearExplosions()
+    this.triggerExplosions()
     this.handleCollisions()
     this.moveSpaceObjects()
     this.generateAsteroids()
   }
 
-  fun cleanExplosions() {
+  fun clearExplosions() {
+    this.field.clearExplosions()
+  }
+
+  fun triggerExplosions() {
+    this.field.triggerExplosions()
   }
 
   fun handleCollisions() {
     this.field.spaceObjects.forEachPair {
         (first, second) ->
-      if (first.impacts(second)) {
-        if(isExplosionCollision(first, second)) this.field.generateExplosion(first.center)
-        first.collideWith(second, GameEngineConfig.coefficientRestitution)
+      if (first.impacts(second) && !isExplosion(first, second)) {
+        if(isExplosionCollision(first, second)) {
+          this.field.generateExplosion(first.center)
+          this.field.removeObject(first)
+          this.field.removeObject(second)
+        } else 
+          first.collideWith(second, GameEngineConfig.coefficientRestitution)
       }
     }
+  }
+
+  fun isExplosion(first: SpaceObject, second: SpaceObject): Boolean {
+    return (first is Explosion || second is Explosion)
   }
 
   fun isExplosionCollision(first: SpaceObject, second: SpaceObject): Boolean {

@@ -11,4 +11,12 @@ class Explosion(
   radius: Double,
   mass: Double
 ) :
-  SpaceObject("Explosion", 'X', initialPosition, initialVelocity, radius, mass)
+  SpaceObject("Explosion", 'X', initialPosition, initialVelocity, radius, mass) {
+    var triggered: Boolean = isTriggered
+    fun trigger() {
+      this.triggered = true
+    }
+    fun isTriggered(): Boolean {
+      return this.triggered
+    }
+  }

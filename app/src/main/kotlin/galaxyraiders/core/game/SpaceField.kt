@@ -29,13 +29,13 @@ object SpaceFieldConfig {
 data class SpaceField(val width: Int, val height: Int, val generator: RandomGenerator) {
   val ship = initializeShip()
 
-  var asteroids: List<Asteroid> = emptyList()
+  var asteroids: MutableList<Asteroid> = ArrayList()
     private set
 
-  var missiles: List<Missile> = emptyList()
+  var missiles: MutableList<Missile> = ArrayList()
     private set
 
-  var explosions: List<Explosion> = emptyList()
+  var explosions: MutableList<Explosion> = ArrayList()
     private set
 
   val spaceObjects: List<SpaceObject>
@@ -51,6 +51,23 @@ data class SpaceField(val width: Int, val height: Int, val generator: RandomGene
 
   fun generateExplosion(position: Point2D) {
     explosions += createExplosion(position)
+  }
+
+  fun triggerExplosions() {
+    explosions.toList().forEach { it.trigger() }
+  }
+
+  fun clearExplosions() {
+    explosions.toList().forEach { if(it.isTriggered()) explosions.remove(it) }
+  }
+
+  fun removeObject(obj: SpaceObject) {
+    if(obj is Asteroid) {
+      this.asteroids.remove(obj)
+    } 
+    else {
+      this.missiles.remove(obj)
+    }
   }
 
   private fun createExplosion(position: Point2D): Explosion {
